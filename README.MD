@@ -27,9 +27,8 @@ import { NgxTwitterTimelineModule } from 'ngx-twitter-timeline';
   ],
   imports: [
     BrowserModule,
-
     // Specify library as an import
-    NgxTwitterTimelineModule
+    NgxTwitterTimelineModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
@@ -40,14 +39,10 @@ export class AppModule { }
 Once the library is imported, you can use its component in your Angular application:
 
 ```xml
-<!-- You can now use your library component in app.component.html -->
+<!-- You can now use the library component in app.component.html -->
 <ngx-twitter-timeline 
-	[data]="{
-		sourceType: 'url',
-		url: 'https://twitter.com/twitterdev'}"
-	[opts]="{
-		tweetLimit: 5
-	}"
+	[data]="{sourceType: 'url', url: 'https://twitter.com/twitterdev'}"
+	[opts]="{tweetLimit: 5}"
 ></ngx-twitter-timeline>
 ```
 
