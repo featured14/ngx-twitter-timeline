@@ -1,4 +1,4 @@
-import { AfterViewInit, OnInit, Component, ElementRef, Input } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
 import { TwitterTimelineService } from './twitter-timeline.service';
 import TwitterTimelineData from './TwitterTimelineData';
 import TwitterTimelineOptions from './TwitterTimelineOptions';
@@ -7,7 +7,7 @@ import TwitterTimelineOptions from './TwitterTimelineOptions';
   selector: 'ngx-twitter-timeline',
   template: ``,
 })
-export class TwitterTimelineComponent implements OnInit, AfterViewInit {
+export class TwitterTimelineComponent {
   /**
    * The data source definition object for the content to be displayed in the widget.
    * May be a widget ID string for a search API timeline or legacy widget
@@ -17,22 +17,21 @@ export class TwitterTimelineComponent implements OnInit, AfterViewInit {
    * A hash of additional options to configure the widget
    */
   @Input() opts: TwitterTimelineOptions;
-  defaultOpts: TwitterTimelineOptions;
+  defaultOpts: TwitterTimelineOptions = {
+    tweetLimit: 5
+  };;
   defaultData: TwitterTimelineData = {
     sourceType: 'url',
     url: 'https://twitter.com/twitterdev',
     screenName: 'twitterdev'
   };
 
-  constructor (
+  constructor(
     private element: ElementRef,
     private twitterTimelineService: TwitterTimelineService
   ) { }
 
-  ngOnInit() {
-    this.defaultOpts = {
-      tweetLimit: 5
-    };
+  ngOnChanges() {
     if (this.data && this.data.sourceType) {
       switch (this.data.sourceType) {
         case 'url':
@@ -44,21 +43,23 @@ export class TwitterTimelineComponent implements OnInit, AfterViewInit {
         default:
           break;
       }
+      this.loadTwitterWidget();
     }
   }
 
-  ngAfterViewInit() {
+  loadTwitterWidget() {
     this.twitterTimelineService
       .loadScript()
       .subscribe(
         twttr => {
           let nativeElement = this.element.nativeElement;
+          nativeElement.innerHTML = "";
           window['twttr']
             .widgets
             .createTimeline(
-              {...this.defaultData, ...this.data},
+              { ...this.defaultData, ...this.data },
               nativeElement,
-              {...this.defaultOpts, ...this.opts}
+              { ...this.defaultOpts, ...this.opts }
             )
             .then(embed => {
               // console.log(embed);
