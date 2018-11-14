@@ -15,6 +15,11 @@ export default interface TwitterTimelineOptions {
    */
   borderColor?: string;
   /**
+   * Sets the theme of the widget. Default = 'light'.
+   * 'light' or 'dark'
+   */
+  theme?: string;
+  /**
    * Toggle the display of design elements in the widget. This parameter is a space-separated list of values
    * Values: noheader, nofooter, noborders, transparent, noscrollbar
    */
