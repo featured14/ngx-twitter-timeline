@@ -48,7 +48,7 @@ export class NgxTwitterTimelineComponent {
       // add angular server side rendering suppert (SSR)      
       if(isPlatformBrowser(this.platformId)) {
         this.loadTwitterWidget();
-    }
+      }
     }
   }
 
