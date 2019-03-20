@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NgxTwitterTimelineService } from './ngx-twitter-timeline.service';
 import NgxTwitterTimelineData from './ngx-twitter-timeline-data.interface';
 import NgxTwitterTimelineOptions from './ngx-twitter-timeline-options.interface';
@@ -28,6 +29,7 @@ export class NgxTwitterTimelineComponent {
 
   constructor(
     private element: ElementRef,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private twitterTimelineService: NgxTwitterTimelineService
   ) { }
 
@@ -43,7 +45,10 @@ export class NgxTwitterTimelineComponent {
         default:
           break;
       }
-      this.loadTwitterWidget();
+      // add angular server side rendering suppert (SSR)      
+      if(isPlatformBrowser(this.platformId)) {
+        this.loadTwitterWidget();
+    }
     }
   }
 
