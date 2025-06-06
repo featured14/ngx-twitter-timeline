@@ -40,11 +40,17 @@ Once the library is imported, you can use its component in your Angular applicat
 
 ```xml
 <!-- You can now use the library component in app.component.html -->
-<ngx-twitter-timeline 
-	[data]="{sourceType: 'url', url: 'https://twitter.com/twitterdev'}"
-	[opts]="{tweetLimit: 5}"
+<ngx-twitter-timeline
+        [data]="{sourceType: 'url', url: 'https://twitter.com/twitterdev'}"
+        [opts]="{tweetLimit: 5}"
 ></ngx-twitter-timeline>
 ```
+
+### Server side rendering
+
+`ngx-twitter-timeline` is compatible with Angular Universal. The widget is
+rendered only in the browser, so you can include the component in Universal
+applications without extra guards.
 
 ## Data
 Data can take value of `url` or `profile`.  

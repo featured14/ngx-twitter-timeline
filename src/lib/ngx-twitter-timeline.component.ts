@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input } from '@angular/core';
+import { Component, ElementRef, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NgxTwitterTimelineService } from './ngx-twitter-timeline.service';
 import NgxTwitterTimelineData from './ngx-twitter-timeline-data.interface';
 import NgxTwitterTimelineOptions from './ngx-twitter-timeline-options.interface';
@@ -28,11 +29,12 @@ export class NgxTwitterTimelineComponent {
 
   constructor(
     private element: ElementRef,
-    private twitterTimelineService: NgxTwitterTimelineService
+    private twitterTimelineService: NgxTwitterTimelineService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
   ngOnChanges() {
-    if (this.data && this.data.sourceType) {
+    if (isPlatformBrowser(this.platformId) && this.data && this.data.sourceType) {
       switch (this.data.sourceType) {
         case 'url':
           delete this.defaultData.screenName;
@@ -48,13 +50,17 @@ export class NgxTwitterTimelineComponent {
   }
 
   loadTwitterWidget() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     this.twitterTimelineService
       .loadScript()
       .subscribe(
         twttr => {
-          let nativeElement = this.element.nativeElement;
+          const nativeElement = this.element.nativeElement;
           nativeElement.innerHTML = "";
-          window['twttr']
+          (window as any)['twttr']
             .widgets
             .createTimeline(
               { ...this.defaultData, ...this.data },
