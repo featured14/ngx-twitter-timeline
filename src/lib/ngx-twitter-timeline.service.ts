@@ -11,7 +11,7 @@ export class NgxTwitterTimelineService {
   constructor() { }
 
   loadScript(): Observable<any> {
-    return Observable.create(observer => {
+    return new Observable(observer => {
 
       this.startScriptLoad();
 
