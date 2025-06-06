@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { DOCUMENT } from '@angular/common';
+import { NgxTwitterTimelineService } from './ngx-twitter-timeline.service';
 
 import { NgxTwitterTimelineComponent } from './ngx-twitter-timeline.component';
 
@@ -8,7 +10,11 @@ describe('NgxTwitterTimelineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NgxTwitterTimelineComponent ]
+      declarations: [ NgxTwitterTimelineComponent ],
+      providers: [
+        NgxTwitterTimelineService,
+        { provide: DOCUMENT, useValue: document }
+      ]
     })
     .compileComponents();
   }));

@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +9,21 @@ export class NgxTwitterTimelineService {
   private TWITTER_SCRIPT_ID = 'twitter-wjs';
   private TWITTER_WIDGET_URL = 'https://platform.twitter.com/widgets.js';
 
-  constructor() { }
+  constructor(
+    @Inject(DOCUMENT) private document: any,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   loadScript(): Observable<any> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return of(null);
+    }
+
     return new Observable(observer => {
 
       this.startScriptLoad();
 
-      window['twttr'].ready((twttr) => {
+      (window as any)['twttr'].ready((twttr: any) => {
         observer.next(twttr);
         observer.complete();
       });
@@ -24,11 +32,15 @@ export class NgxTwitterTimelineService {
   }
 
   private startScriptLoad() {
-    window['twttr'] = (function(d, s, id, url)
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    (window as any)['twttr'] = (function(d: Document, s: string, id: string, url: string)
     {
       let script,
       firstScriptEl = d.getElementsByTagName(s)[0],
-      twitterScript = window['twttr'] || {};
+      twitterScript: any = (window as any)['twttr'] || {};
       if (d.getElementById(id)) {
         return twitterScript;
       }
@@ -36,15 +48,15 @@ export class NgxTwitterTimelineService {
       script = d.createElement(s);
       script.id = id;
       script.src = url;
-      firstScriptEl.parentNode.insertBefore(script, firstScriptEl);
+      firstScriptEl.parentNode!.insertBefore(script, firstScriptEl);
 
       twitterScript._e = [];
 
-      twitterScript.ready = function(f) {
+      twitterScript.ready = function(f: any) {
         twitterScript._e.push(f);
       };
 
       return twitterScript;
-    }(document, 'script', this.TWITTER_SCRIPT_ID, this.TWITTER_WIDGET_URL));
+    }(this.document, 'script', this.TWITTER_SCRIPT_ID, this.TWITTER_WIDGET_URL));
   }
 }
